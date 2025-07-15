@@ -2,15 +2,16 @@
 --// Variables
 
 local queueonteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
-if queueonteleport then
-	queueonteleport("loadstring(game:HttpGet("https://raw.githubusercontent.com/EnzoLisianthus/sss/refs/heads/main/--%20esp.lua.txt"))()")
-end
-
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local localPlayer = Players.LocalPlayer
 local camera = workspace.CurrentCamera
 local cache = {}
+
+if queueonteleport then
+	queueonteleport("loadstring(game:HttpGet("https://raw.githubusercontent.com/EnzoLisianthus/sss/refs/heads/main/--%20esp.lua.txt"))()")
+end
+
 
 local bones = {
     {"Head", "UpperTorso"},
