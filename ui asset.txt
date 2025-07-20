@@ -54,7 +54,7 @@ function Library:CreateWindow(title)
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Parent = Main
 	})
-	AddUICorner(Title, 0)
+	AddUICorner(Title, 12)
 
 	-- ⊖ 최소화 버튼
 	local Minimize = Create("TextButton", {
