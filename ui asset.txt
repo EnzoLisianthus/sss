@@ -1,8 +1,8 @@
+-- SleekUILib.lua
 local TweenService = game:GetService("TweenService")
 
 local Library = {}
 
--- Helper: UI 생성기
 local function Create(class, props)
     local inst = Instance.new(class)
     for i, v in pairs(props) do
@@ -11,14 +11,12 @@ local function Create(class, props)
     return inst
 end
 
--- Helper: UI Corner 적용
 local function AddUICorner(obj, radius)
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, radius or 8)
     corner.Parent = obj
 end
 
--- Helper: UI Stroke 적용
 local function AddUIStroke(obj, thickness)
     local stroke = Instance.new("UIStroke")
     stroke.Thickness = thickness or 1
@@ -28,15 +26,14 @@ end
 
 function Library:CreateWindow(title)
     local Player = game.Players.LocalPlayer
-    local Gui = Create("ScreenGui", {
-        Name = "SleekUILib",
-        Parent = Player:WaitForChild("PlayerGui"),
-        ResetOnSpawn = false,
-    })
+
+    local Gui = Instance.new("ScreenGui", Player:WaitForChild("PlayerGui"))
+    Gui.Name = "SleekUILib"
+    Gui.ResetOnSpawn = false
 
     local Main = Create("Frame", {
-        Size = UDim2.new(0, 500, 0, 350),
-        Position = UDim2.new(0.5, -250, 0.5, -175),
+        Size = UDim2.new(0, 520, 0, 360),
+        Position = UDim2.new(0.5, -260, 0.5, -180),
         BackgroundColor3 = Color3.fromRGB(30, 30, 30),
         BorderSizePixel = 0,
         Parent = Gui
@@ -44,19 +41,11 @@ function Library:CreateWindow(title)
     AddUICorner(Main, 10)
     AddUIStroke(Main, 1)
 
-    -- 드래그 지원
-    local Drag = Instance.new("TextButton", Main)
-    Drag.Size = UDim2.new(1, 0, 0, 30)
-    Drag.BackgroundTransparency = 1
-    Drag.Text = ""
-    Drag.Active = true
-    Drag.Draggable = true
-
     local Title = Create("TextLabel", {
         Size = UDim2.new(1, 0, 0, 30),
         BackgroundColor3 = Color3.fromRGB(20, 20, 20),
         Text = title or "Sleek UI",
-        TextColor3 = Color3.fromRGB(255, 255, 255),
+        TextColor3 = Color3.new(1, 1, 1),
         Font = Enum.Font.GothamBold,
         TextSize = 16,
         Parent = Main
@@ -78,26 +67,30 @@ function Library:CreateWindow(title)
         Parent = Main
     })
 
+    local TabListLayout = Instance.new("UIListLayout", Tabs)
+    TabListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    TabListLayout.Padding = UDim.new(0, 5)
+
     local TabButtons = {}
     local currentPage = nil
 
     function Library:CreateTab(name)
         local btn = Create("TextButton", {
-            Size = UDim2.new(1, -10, 0, 30),
-            BackgroundColor3 = Color3.fromRGB(35, 35, 35),
+            Size = UDim2.new(1, -10, 0, 32),
+            BackgroundColor3 = Color3.fromRGB(40, 40, 40),
             Text = name,
-            TextColor3 = Color3.new(1,1,1),
+            TextColor3 = Color3.new(1, 1, 1),
             Font = Enum.Font.Gotham,
             TextSize = 14,
             Parent = Tabs
         })
         AddUICorner(btn, 6)
-        AddUIStroke(btn, 0.5)
+        AddUIStroke(btn, 1)
 
         local page = Create("ScrollingFrame", {
             Size = UDim2.new(1, 0, 1, 0),
             CanvasSize = UDim2.new(0, 0, 0, 0),
-            ScrollBarThickness = 4,
+            ScrollBarThickness = 6,
             Visible = false,
             BackgroundTransparency = 1,
             Parent = Pages
@@ -106,6 +99,10 @@ function Library:CreateWindow(title)
         local layout = Instance.new("UIListLayout", page)
         layout.Padding = UDim.new(0, 6)
         layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+        layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            page.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+        end)
 
         table.insert(TabButtons, {Button = btn, Page = page})
 
@@ -116,20 +113,19 @@ function Library:CreateWindow(title)
             page.Visible = true
         end)
 
-        -- 기본 선택
         if not currentPage then
             page.Visible = true
             currentPage = page
         end
 
         return {
-            AddButton = function(self, text, callback)
+            AddButton = function(_, text, callback)
                 local button = Create("TextButton", {
-                    Size = UDim2.new(1, -10, 0, 32),
-                    BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+                    Size = UDim2.new(1, -10, 0, 36),
+                    BackgroundColor3 = Color3.fromRGB(45, 45, 45),
                     Text = text,
-                    TextColor3 = Color3.new(1,1,1),
-                    Font = Enum.Font.Gotham,
+                    TextColor3 = Color3.new(1, 1, 1),
+                    Font = Enum.Font.GothamMedium,
                     TextSize = 14,
                     Parent = page
                 })
@@ -138,10 +134,9 @@ function Library:CreateWindow(title)
 
                 button.MouseButton1Click:Connect(function()
                     callback()
-                    -- 간단한 애니메이션
-                    TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}):Play()
-                    task.wait(0.2)
-                    TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(40, 40, 40)}):Play()
+                    TweenService:Create(button, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(65, 65, 65)}):Play()
+                    task.wait(0.1)
+                    TweenService:Create(button, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(45, 45, 45)}):Play()
                 end)
             end
         }
