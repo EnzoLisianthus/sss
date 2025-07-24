@@ -116,7 +116,7 @@ function Library:CreateWindow(title)
 
 	local Tabs = Create("Frame", {
 		Size = UDim2.new(0, 120, 1, -36),
-		Position = UDim2.new(0, 0, 0, 36),
+		Position = UDim2.new(0.5, 0, 0, 36),
 		BackgroundColor3 = Color3.fromRGB(25, 25, 25),
 		Parent = Main
 	})
