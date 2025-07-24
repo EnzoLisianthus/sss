@@ -2,6 +2,7 @@
 
 local TweenService = game:GetService("TweenService")
 local UIS = game:GetService("UserInputService")
+local Player = game.Players.LocalPlayer
 
 local Library = {}
 
@@ -69,6 +70,49 @@ function Library:CreateWindow(title)
 	})
 	AddUICorner(Minimize, 6)
 	AddUIStroke(Minimize, 1)
+	-- info 이름 시간
+	local InfoFrame = Create("Frame", {
+		Size = UDim2.new(0, 180, 0, 28),
+		Position = UDim2.new(1, -220, 0, 4),
+		BackgroundTransparency = 1,
+		Parent = Main
+	})
+	local PlayerLabel = Create("TextLabel", {
+		Size = UDim2.new(0.6, 0, 1, 0),
+		Position = UDim2.new(0, 0, 0, 0),
+		BackgroundTransparency = 1,
+		Text = "Hi, " .. Player.Name,
+		TextColor3 = Color3.fromRGB(180, 180, 180),
+		Font = Enum.Font.Gotham,
+		TextSize = 14,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextYAlignment = Enum.TextYAlignment.Center,
+		Parent = InfoFrame
+	})
+	local TimeLabel = Create("TextLabel", {
+		Size = UDim2.new(0.4, 0, 1, 0),
+		Position = UDim2.new(0.6, 0, 0, 0),
+		BackgroundTransparency = 1,
+		TextColor3 = Color3.fromRGB(180, 180, 180),
+		Font = Enum.Font.Gotham,
+		TextSize = 14,
+		TextXAlignment = Enum.TextXAlignment.Right,
+		TextYAlignment = Enum.TextYAlignment.Center,
+		Parent = InfoFrame
+	})
+	-- 시간 업데이트 함수
+	local function updateTime()
+		while true do
+			local now = os.date("*t")  -- 로컬 시간 테이블
+			local hour = string.format("%02d", now.hour)
+			local min = string.format("%02d", now.min)
+			local sec = string.format("%02d", now.sec)
+			TimeLabel.Text = hour .. ":" .. min .. ":" .. sec
+			task.wait(1)
+		end
+	end
+	task.spawn(updateTime)
+
 
 	local Tabs = Create("Frame", {
 		Size = UDim2.new(0, 120, 1, -36),
